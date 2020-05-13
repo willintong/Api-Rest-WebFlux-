@@ -47,7 +47,7 @@ public class ServicePostsBookTest {
                             .build());
                 });
         ServicePostsBook servicePostsBook = new ServicePostsBook(webClientBuilder);
-        StepVerifier.create(servicePostsBook.findById(2))
+        StepVerifier.create(servicePostsBook.findById(1))
                 .expectNext(postsBook)
                 .verifyComplete();
     }

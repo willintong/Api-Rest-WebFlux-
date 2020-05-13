@@ -34,7 +34,8 @@ public class ControllerPostsBookTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(PostsBook.class)
-                .hasSize(1);
+                .hasSize(1)
+        .contains();
     }
 
     @Test
@@ -48,8 +49,6 @@ public class ControllerPostsBookTest {
                 .uri("/posts/1")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(PostsBook.class)
-                .hasSize(1)
-                .contains(postsBook);
+                .expectBody(PostsBook.class);
     }
 }
