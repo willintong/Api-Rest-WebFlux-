@@ -2,12 +2,13 @@ package com.example.webflux.entity;
 
 import lombok.*;
 
-@Data
+@Value
+@Builder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class PostsBook {
-    private Integer id;
-    private Integer userId;
-    private String title;
-    private String body;
+    Integer id;
+    Integer userId;
+    String title;
+    String body;
 }

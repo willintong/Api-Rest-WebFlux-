@@ -11,6 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @WebFluxTest(ControllerPostsBook.class)
@@ -23,8 +24,8 @@ public class ControllerPostsBookTest {
     private WebTestClient webTestClient;
 
     @Test
-    void shouldReturnFromRepository(){
-        PostsBook postsBook = new PostsBook(1,2,"My title","Cuerpo");
+    void shouldReturnFromRepository() {
+        PostsBook postsBook = PostsGenrator.createPost();
 
         when(iPostsBookRepository.findAll())
                 .thenReturn(Flux.just(postsBook));
@@ -35,20 +36,25 @@ public class ControllerPostsBookTest {
                 .expectStatus().isOk()
                 .expectBodyList(PostsBook.class)
                 .hasSize(1)
-        .contains();
+                .contains(postsBook);
+
+        verify(iPostsBookRepository).findAll();
     }
 
     @Test
-    void shouldReturnFromRepositoryById(){
-        PostsBook postsBook = new PostsBook(1,2,"My title","Cuerpo");
+    void shouldReturnFromRepositoryById() {
+        PostsBook postsBook = PostsGenrator.createPost();
 
-        when(iPostsBookRepository.findById(1))
+        when(iPostsBookRepository.findById(postsBook.getId()))
                 .thenReturn(Mono.just(postsBook));
 
         webTestClient.get()
                 .uri("/posts/1")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(PostsBook.class);
+                .expectBody(PostsBook.class)
+                .isEqualTo(postsBook);
+
+        verify(iPostsBookRepository).findById(1);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.webflux.service;
 
 import com.example.webflux.entity.PostsBook;
+import com.example.webflux.controller.PostsGenrator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -18,35 +19,32 @@ public class ServicePostsBookTest {
     @Test
     void shouldFetchPostsFromExternalService() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        PostsBook postsBook = new PostsBook(1,2,"My title","Cuerpo");
+        PostsBook postsBook = PostsGenrator.createPost();
         String body = objectMapper.writeValueAsString(postsBook);
 
         WebClient.Builder webClientBuilder = WebClient.builder()
-                .exchangeFunction(response ->{
-                    return Mono.just(ClientResponse.create(HttpStatus.OK)
-                            .header("content-type", "application/json")
-                            .body(body)
-                            .build());
-                });
-        ServicePostsBook servicePostsBook = new ServicePostsBook(webClientBuilder);
+                .exchangeFunction(response -> Mono.just(ClientResponse.create(HttpStatus.OK)
+                        .header("content-type", "application/json")
+                        .body(body)
+                        .build()));
+        ServicePostsBook servicePostsBook = new ServicePostsBook(webClientBuilder, "");
         StepVerifier.create(servicePostsBook.findAll())
-        .expectNext(postsBook)
-        .verifyComplete();
+                .expectNext(postsBook)
+                .verifyComplete();
     }
+
     @Test
     void shouldFetchPostsFromExternalServiceById() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        PostsBook postsBook = new PostsBook(1,2,"My title","Cuerpo");
+        PostsBook postsBook = PostsGenrator.createPost();
         String body = objectMapper.writeValueAsString(postsBook);
 
         WebClient.Builder webClientBuilder = WebClient.builder()
-                .exchangeFunction(response ->{
-                    return Mono.just(ClientResponse.create(HttpStatus.OK)
-                            .header("content-type", "application/json")
-                            .body(body)
-                            .build());
-                });
-        ServicePostsBook servicePostsBook = new ServicePostsBook(webClientBuilder);
+                .exchangeFunction(response -> Mono.just(ClientResponse.create(HttpStatus.OK)
+                        .header("content-type", "application/json")
+                        .body(body)
+                        .build()));
+        ServicePostsBook servicePostsBook = new ServicePostsBook(webClientBuilder,"");
         StepVerifier.create(servicePostsBook.findById(1))
                 .expectNext(postsBook)
                 .verifyComplete();
